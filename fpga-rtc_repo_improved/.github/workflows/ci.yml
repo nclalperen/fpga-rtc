@@ -1,0 +1,51 @@
+name: FPGA CI (iverilog)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  sim:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install iverilog
+        run: sudo apt-get update && sudo apt-get install -y iverilog
+
+      - name: Discover testbenches
+        id: discover
+        run: |
+          shopt -s nullglob
+          TBs=(tb/*_tb.v tb/*_tb.sv tb/*tb.v tb/*tb.sv tb/smoke_tb.v tb/rtc_tb.sv)
+          if [ ${#TBs[@]} -eq 0 ]; then
+            echo "found=0" >> $GITHUB_OUTPUT
+            echo "No testbenches found; skipping simulation."
+          else
+            printf '%s
+' "${TBs[@]}" > tb_list.txt
+            echo "found=1" >> $GITHUB_OUTPUT
+            echo "Found testbenches:"
+            cat tb_list.txt
+          fi
+
+      - name: Compile & run
+        if: steps.discover.outputs.found == '1'
+        run: |
+          set -e
+          mkdir -p build
+          while read -r TB; do
+            echo "== Running $TB =="
+            iverilog -g2012 -o build/sim.out "$TB" src/*.v src/*.sv
+            vvp build/sim.out +dump || exit 1
+          done < tb_list.txt
+
+      - name: Upload waves (if any)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vcd-waves
+          path: |
+            waves.vcd
+            build/*.vcd
+          if-no-files-found: ignore
+
