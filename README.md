@@ -5,6 +5,7 @@
 [![FPGA CI (iverilog)](https://github.com/nclalperen/fpga-rtc/actions/workflows/ci.yml/badge.svg)](https://github.com/nclalperen/fpga-rtc/actions/workflows/ci.yml)
 ![Language](https://img.shields.io/badge/language-VHDL-purple)
 ![Target](https://img.shields.io/badge/target-Artix--7%20xc7a100t-red)
+[![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-green)](LICENSE)
 
 The design (`RTC_7Seg`) divides the board's 100 MHz system clock down to a
 1 Hz timebase for the HH:MM:SS counters and a 1 kHz scan clock that
@@ -63,3 +64,7 @@ SystemVerilog benches provide the CI scaffold and smoke coverage.
 - Hours currently count 0–9 (no 24-hour rollover yet)
 - Button debouncing is not implemented
 - Time-set mode via switches is planned
+
+## License
+
+[GPL-3.0](LICENSE)

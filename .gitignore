@@ -1,47 +1,18 @@
-# Vivado / Quartus / general FPGA noise
+# Simulation/build outputs
+build/
+waves.vcd
+*.vcd
+
+# Vivado run artifacts
 *.jou
 *.log
-*.str
-*.rpt
-*.bit
-*.bin
-*.mcs
-*.svf
-*.vcd
-*.wdb
-*.pb
-*.dcp
-
-# Vivado project dirs
-*.cache/
-*.hw/
-*.ip_user_files/
-*.runs/
-*.sim/
-*.srcs/
-*.xpr
-*.xsa
-*.xpr.lock/
-
-# Quartus
-db/
-incremental_db/
-_output_files/
-*.qpf
-*.qsf
-*.sof
-*.pof
-
-# Build & temp
-build/
-tmp/
-.temp/
-*.swp
-*.bak
-*.tmp
-
-# Node / Python (if scripts present)
-node_modules/
-.venv/
-__pycache__/
-*.pyc
+*.rpx
+*.vdi
+*.vds
+*.wdf
+*.wpc
+*.lpr
+.Xil/
+vrs_config_*.xml
+.*.rst
+__synthesis_is_complete__
