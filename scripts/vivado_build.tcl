@@ -1,17 +1,28 @@
-# vivado_build.tcl — minimal non-GUI flow (edit PART and TOP)
-set PART "xc7a35tcsg324-1"   ;# TODO: change to your FPGA part
-set TOP  "rtc_top"           ;# TODO: change to your top module
+# vivado_build.tcl — minimal non-GUI flow
+set PART "xc7a100tcsg324-1"   ;# Artix-7 100T (Nexys A7-100T)
+set TOP  "RTC_7Seg"
 set PROJ "fpga_rtc_proj"
 
 create_project $PROJ ./build -part $PART -force
-set_property target_language Verilog [current_project]
+set_property target_language VHDL [current_project]
 
-# Add all Verilog/SystemVerilog files from src/
-set src_files [glob -nocomplain ./src/*.v ./src/*.sv]
-if {[llength $src_files] == 0} {
+# Add RTL sources from src/
+set vhdl_files [glob -nocomplain ./src/*.vhd]
+if {[llength $vhdl_files] > 0} {
+  add_files -norecurse $vhdl_files
+}
+set verilog_files [glob -nocomplain ./src/*.v ./src/*.sv]
+if {[llength $verilog_files] > 0} {
+  add_files -norecurse $verilog_files
+}
+if {[llength $vhdl_files] == 0 && [llength $verilog_files] == 0} {
   puts "WARN: no RTL sources in ./src"
-} else {
-  add_files -norecurse $src_files
+}
+
+# Constraints
+set xdc_files [glob -nocomplain ./src/*.xdc]
+if {[llength $xdc_files] > 0} {
+  add_files -fileset constrs_1 -norecurse $xdc_files
 }
 
 set_property top $TOP [current_fileset]
@@ -30,4 +41,3 @@ file mkdir ./build/reports
 report_utilization -file ./build/reports/util.rpt -pb
 report_timing_summary -file ./build/reports/timing.rpt -pb
 puts "DONE."
-
