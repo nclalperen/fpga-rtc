@@ -21,8 +21,7 @@ jobs:
             echo "found=0" >> $GITHUB_OUTPUT
             echo "No testbenches found; skipping simulation."
           else
-            printf '%s
-' "${TBs[@]}" > tb_list.txt
+            printf '%s\n' "${TBs[@]}" | sort -u > tb_list.txt
             echo "found=1" >> $GITHUB_OUTPUT
             echo "Found testbenches:"
             cat tb_list.txt
@@ -32,11 +31,9 @@ jobs:
         if: steps.discover.outputs.found == '1'
         run: |
           set -e
-          mkdir -p build
           while read -r TB; do
             echo "== Running $TB =="
-            iverilog -g2012 -o build/sim.out "$TB" src/*.v src/*.sv
-            vvp build/sim.out +dump || exit 1
+            bash scripts/sim_iverilog.sh "$TB"
           done < tb_list.txt
 
       - name: Upload waves (if any)
